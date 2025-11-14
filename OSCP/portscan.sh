@@ -25,14 +25,14 @@ udp=$(cat $file | grep udp | awk {'print $4'} | awk -F '/' {'print $1'} | sort -
 
 if [ ! -z $tcp ]; then
   printf "\n\nStarting TCP port scan\n\n"
-  echo >> $file
   nmap $1 -p $tcp -Pn -sT -sV -sC -oN $file
+  echo >> $file
 fi
 
 if [ ! -z $udp ]; then
   printf "\n\nStarting UDP port scan\n\n"
-  echo >> $file
   nmap $1 -p $udp -Pn -sU -sV -sC -oN $file --append-output
+  echo >> $file
 fi
 
 cat $file | grep -vE "# Nmap|Nmap scan report for|Host is up|Service detection performed" | awk '/./ { e=0 } /^$/ { e += 1 } e <= 1' | sponge $file

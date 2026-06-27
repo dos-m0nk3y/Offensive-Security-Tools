@@ -15,8 +15,8 @@ if [ ! -f "$IPA_FILE" ]; then
 fi
 
 # Get the app name from the IPA file
-APP_NAME="$(basename ""$IPA_FILE"" .ipa)"
-OUTPUT_DIR="$(dirname ""$IPA_FILE"" | xargs readlink -f)"
+APP_NAME="$(basename "$IPA_FILE" .ipa)"
+OUTPUT_DIR="$(dirname "$IPA_FILE" | xargs readlink -f)"
 
 # Create output directory
 OUTPUT_DIR="$OUTPUT_DIR/$APP_NAME"
@@ -36,7 +36,7 @@ if [ -z "$APP_PATH" ]; then
   exit 1
 fi
 
-BINARY="$APP_PATH/$(basename ""$APP_PATH"" .app)"
+BINARY="$APP_PATH/$(basename "$APP_PATH" .app)"
 
 # Check if the binary exists (file without an extension in the .app folder)
 if [ ! -f "$BINARY" ]; then
@@ -52,11 +52,11 @@ mkdir -p "$SWIFT_DUMP_OUTPUT"
 
 # Dump Objective-C classes using class-dump
 echo "[*] Dumping Objective-C classes for $APP_NAME..."
-ipsw class-dump "$BINARY" --headers -o "$CLASS_DUMP_OUTPUT"
+ipsw class-dump "$BINARY" --headers -o "$CLASS_DUMP_OUTPUT" 2> /dev/null
 
 # Dump Swift classes using swift-dump
 echo "[*] Dumping Swift classes for $APP_NAME..."
-ipsw swift-dump "$BINARY" > "$SWIFT_DUMP_OUTPUT/$APP_NAME-mangled.txt"
-ipsw swift-dump "$BINARY" --demangle > "$SWIFT_DUMP_OUTPUT/$APP_NAME-demangled.txt"
+ipsw swift-dump "$BINARY" > "$SWIFT_DUMP_OUTPUT/$APP_NAME-mangled.txt" 2> /dev/null
+ipsw swift-dump "$BINARY" --demangle > "$SWIFT_DUMP_OUTPUT/$APP_NAME-demangled.txt" 2> /dev/null
 
 echo "[+] Decompilation completed for $APP_NAME"
